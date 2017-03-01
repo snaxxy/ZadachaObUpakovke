@@ -27,7 +27,7 @@ public class Things {
 
         for (int i = 0; i < 20; ++i) {
 
-            System.out.printf("%2s   ", i + 1);
+            System.out.printf("%2s   ", i);
             for (int j = 0; j < 5; ++j) {
                 System.out.printf(this.things.get(i).getCriterionSet()[j] + "   ");
             }
