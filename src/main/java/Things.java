@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /*
  Класс обертки набора элементов
@@ -19,9 +18,6 @@ public class Things {
         }
     }
 
-    public HashMap<Integer, Thing> getThings() {
-        return things;
-    }
 
     public void printCriterionTable() //вывод таблицы критериев
     {
