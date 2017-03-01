@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ZadachaObUpakovke:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ZadachaObUpakovke_jar</output-path>
+    <root id="archive" name="ZadachaObUpakovke.jar">
+      <element id="module-output" name="ZadachaObUpakovke" />
+    </root>
+  </artifact>
+</component>
