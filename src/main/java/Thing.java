@@ -22,7 +22,7 @@ public class Thing {
         this.volume=random.nextInt(3)+1;
         this.ID=IDs++;
         for (int i=0; i<5; ++i) {
-            criterionSet[i] = random.nextInt(3)+1;
+            criterionSet[i] = random.nextInt(5)+1;
         }
     }
 
