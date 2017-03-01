@@ -60,10 +60,6 @@ if ((thing.getWeight()<=container.freeWeight())&&(thing.getVolume()<=container.f
         }
     }
 
-    public List<Container> getContainers()
-    {
-        return containers;
-    }
 
     public void printContainers()
     {

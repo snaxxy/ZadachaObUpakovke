@@ -17,7 +17,7 @@ public class Logic {
         if(!things.calculateRelationships())//расчет таблицы отношений
         {
             System.err.println("CALCULATION ERROR");
-        };
+        }
         things.printRelationships(); //вывод таблицы отношений
 
         things.calculateLayers();
@@ -30,8 +30,6 @@ public class Logic {
         Containers containers2 = new Containers(NUMBER_OF_CONTAINERS); //создание набора контейнеров
         containers2.packContainerCriterion(things);
         containers2.printContainers(); //вывод содержимого контейнеров
-
-        return;
     }
 
 }
