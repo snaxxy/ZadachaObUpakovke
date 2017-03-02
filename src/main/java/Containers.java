@@ -7,7 +7,7 @@ import java.util.List;
 public class Containers
 {
 
-private List<Container> containers = new ArrayList<>();
+private List<Container> containers = new ArrayList<>(); //список контейнеров
 
 public Containers(int NUMBER_OF_CONTAINERS)
 {
@@ -17,7 +17,7 @@ public Containers(int NUMBER_OF_CONTAINERS)
 	}
 }
 
-public void packContainer(Things things)
+public void packContainer(Things things) //упаковка контейнеров согласно таблице отношений
 {
 	for (ArrayList<Thing> layer : things.getLayers())
 	{
@@ -32,7 +32,7 @@ public void packContainer(Things things)
 	}
 }
 
-public void packContainerCriterion(Things things)
+public void packContainerCriterion(Things things) //упаковка контейнеров согласно сумме критериев
 {
 	for (ArrayList<Thing> layer : things.getCriterionLayers())
 	{
@@ -47,7 +47,7 @@ public void packContainerCriterion(Things things)
 	}
 }
 
-public void tryPacking(Thing thing)
+public void tryPacking(Thing thing) //поиск контейнера для упаковки элемента
 {
 	for (Container container : containers)
 	{
@@ -62,7 +62,7 @@ public void tryPacking(Thing thing)
 }
 
 
-public void printContainers()
+public void printContainers() //вывод содержимого
 {
 	System.out.println("КОНТЕЙНЕРЫ");
 	int i = 1;

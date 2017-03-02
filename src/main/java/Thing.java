@@ -47,7 +47,7 @@ public int getID()
 	return this.ID;
 }
 
-public int criterionSum()
+public int criterionSum() //подсчет суммы критериев для элемента
 {
 	int sum = 0;
 	for (int criterion: criterionSet

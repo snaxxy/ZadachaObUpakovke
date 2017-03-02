@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class Container
 {
 
-private int weightCapacity;
-private int volumeCapacity;
-private ArrayList<Thing> things = new ArrayList<>();
+private int weightCapacity; //предел веса
+private int volumeCapacity; //предел объема
+private ArrayList<Thing> things = new ArrayList<>(); //список элементов в контейнере
 
 
 public Container(int weightCapacity, int volumeCapacity)
@@ -20,18 +20,14 @@ public Container(int weightCapacity, int volumeCapacity)
 public void putThing(Thing thing)
 {
 	things.add(thing);
-}
+} //упаковка элемента в контейнер
 
-public int freeVolume()
-{
-
-	return volumeCapacity - getTotalVolume();
-}
+public int freeVolume() { return volumeCapacity - getTotalVolume(); } //доступный объем
 
 public int freeWeight()
 {
 	return weightCapacity - getTotalWeight();
-}
+} //доступный вес
 
 public int getWeightCapacity()
 {
@@ -43,7 +39,7 @@ public int getVolumeCapacity()
 	return volumeCapacity;
 }
 
-public int getTotalWeight()
+public int getTotalWeight() //занятый вес
 {
 	int totalWeight = 0;
 	for (Thing thing : things)
@@ -53,7 +49,7 @@ public int getTotalWeight()
 	return totalWeight;
 }
 
-public int getTotalVolume()
+public int getTotalVolume() //занятый объем
 {
 	int totalVolume = 0;
 	for (Thing thing : things)
@@ -63,7 +59,7 @@ public int getTotalVolume()
 	return totalVolume;
 }
 
-public void printContainer()
+public void printContainer() //вывод содержимого
 {
 
 	for (Thing thing : things)

@@ -6,10 +6,10 @@ import java.util.HashMap;
  */
 public class Things
 {
-private HashMap<Integer, Thing> things = new HashMap<>();
+private HashMap<Integer, Thing> things = new HashMap<>(); //карта элементов
 private int[][] relationships; //массив отношений
-private ArrayList<ArrayList<Thing>> layers = new ArrayList<>();
-private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>();
+private ArrayList<ArrayList<Thing>> layers = new ArrayList<>(); //список слоев элементов согласно таблице отношений
+private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>(); //список слоев элементов согласно сумме критериев
 
 public Things(int NUMBER_OF_THINGS) //конструктор
 {
@@ -125,13 +125,13 @@ public void printRelationships()
 	System.out.println();
 }
 
-public void calculateLayers()
+public void calculateLayers() //подсчет слоев согласно таблице отношений
 {
-	int maxSum = calculateLayerSum();
+	int maxSum = calculateLayerSum(); //поиск максимальной суммы строки в таблице
 
-	for (int sum = maxSum; sum >= 0; --sum)
+	for (int sum = maxSum; sum >= 0; --sum) //проход по убыванию значений суммы с максимального
 	{
-		boolean existsSum = false;
+		boolean existsSum = false; //флаг существования как минимум одного элемента с текущей суммой
 		for (int ID : things.keySet())
 		{
 			if (things.get(ID).getLayerSum() == sum)
@@ -140,9 +140,9 @@ public void calculateLayers()
 			}
 		}
 
-		if (existsSum)
+		if (existsSum) //в случае существования проходим карту еще раз, занося соответствующие значения в новый слой
 		{
-			ArrayList<Thing> layer = new ArrayList<>();
+			ArrayList<Thing> layer = new ArrayList<>(); //новый слой
 			for (int ID : things.keySet())
 			{
 				if (things.get(ID).getLayerSum() == sum)
@@ -150,12 +150,12 @@ public void calculateLayers()
 					layer.add(things.get(ID));
 				}
 			}
-			layers.add(layer);
+			layers.add(layer); //вносим новый слой в список слоев
 		}
 	}
 }
 
-private int calculateLayerSum()
+private int calculateLayerSum() //подсчет суммы слоя для таблицы отношений
 {
 	int maxSum = 0;
 	for (int i = 0; i < things.size(); ++i)
@@ -179,85 +179,11 @@ private int calculateLayerSum()
 	return maxSum;
 }
 
-    /*public void calculateLayers()
-	{
-        int[][] relationships;
-        relationships = this.relationships;
-
-
-        layersLoop:
-        while (true)
-        {
-            int sum = 0;
-            int minSum = Integer.MAX_VALUE;
-            ArrayList<Thing> layer = new ArrayList<Thing>();
-            ArrayList<Integer> layerIndexes = new ArrayList<Integer>();
-            for (int i=0; i<things.size(); ++i)
-            {
-                int max = -1;
-                for (int j=0; j<things.size(); ++j)
-                {
-                    if (relationships[i][j] != -1)
-                    {
-                        sum += relationships[i][j];
-                    }
-                    if (relationships[i][j]> max)
-                    {
-                        max = relationships[i][j];
-                    }
-                }
-
-                if (max==-1)
-                {
-                    continue;
-                }
-
-                if (sum<minSum)
-                {
-                    minSum = sum;
-                    sum=0;
-
-                    layerIndexes.clear();
-                    layerIndexes.add(i);
-                }
-                else if(sum==minSum)
-                {
-                    layerIndexes.add(i);
-                }
-            }
-            for (int i=0; i<layerIndexes.size(); ++i)
-            {
-                layer.add(things.get(layerIndexes.get(i)));
-
-                for (int j=0; j<things.size();++j)
-                {
-                    relationships[layerIndexes.get(i)][j] = -1;
-                    relationships[j][layerIndexes.get(i)] = -1;
-                }
-            }
-
-            for (int i=0; i<things.size(); ++i)
-            {
-                for (int j = 0; j < things.size(); ++j)
-                {
-                    if (relationships[i][j]!=-1)
-                    {
-                        layers.add(layer);
-                        continue layersLoop;
-                    }
-                }
-            }
-            layers.add(layer);
-            break;
-        }
-        return;
-    }*/
-
-public void calculateCriterionLayers()
+public void calculateCriterionLayers() //подсчет слоев для суммы критериев
 {
 	int maxSum = 0;
 
-	for (int key : things.keySet())
+	for (int key : things.keySet()) //поиск максимальной суммы критериев
 	{
 		Thing thing = things.get(key);
 		if (thing.criterionSum() > maxSum)
@@ -266,9 +192,9 @@ public void calculateCriterionLayers()
 		}
 	}
 
-	for (int i = maxSum; i >= 0; --i)
+	for (int i = maxSum; i >= 0; --i) //проход в убывающем порядке начиная с максимальной суммы
 	{
-		boolean exists = false;
+		boolean exists = false; //флаг существования как минимум одного элемента с текущей суммой
 		for (int key : things.keySet())
 		{
 			Thing thing = things.get(key);
@@ -277,10 +203,10 @@ public void calculateCriterionLayers()
 				exists = true;
 			}
 		}
-		if (exists)
+		if (exists) //если есть элемент
 		{
-			ArrayList<Thing> layer = new ArrayList<>();
-			for (int key : things.keySet())
+			ArrayList<Thing> layer = new ArrayList<>(); //создаем новый слой
+			for (int key : things.keySet()) //добавляем элементы в слой
 			{
 				Thing thing = things.get(key);
 				if (thing.criterionSum() == i)
@@ -288,7 +214,7 @@ public void calculateCriterionLayers()
 					layer.add(thing);
 				}
 			}
-			criterionLayers.add(layer);
+			criterionLayers.add(layer); //добавляем слой в список слоев
 		}
 	}
 }
