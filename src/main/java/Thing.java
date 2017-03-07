@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /*
@@ -13,6 +15,7 @@ private int ID; //идентификатор элемента
 private int[] criterionSet = new int[5]; //массив критериев
 private static int IDs = 0; //счетчик идентификаторов элементов
 private int layerSum = 0;
+private List<Link> links = new ArrayList<>();
 
 
 //TODO: magic numbers
@@ -50,10 +53,9 @@ public int getID()
 public int criterionSum() //подсчет суммы критериев для элемента
 {
 	int sum = 0;
-	for (int criterion: criterionSet
-		 )
+	for (int criterion : criterionSet)
 	{
-		sum+=criterion;
+		sum += criterion;
 	}
 
 	return sum;
@@ -68,4 +70,24 @@ public int getLayerSum()
 {
 	return this.layerSum;
 }
+
+
+/**
+ * Returns a List<Link> of all assigned links
+ */
+public List<Link> getLinks()
+{
+	return links;
 }
+
+/**
+ * adds a link to thing
+ * @param link Link object
+ */
+public void addLink(Link link)
+{
+	links.add(link);
+}
+}
+
+
