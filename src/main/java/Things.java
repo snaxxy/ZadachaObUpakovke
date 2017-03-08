@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /*
  Класс обертки набора элементов
@@ -10,6 +11,8 @@ private HashMap<Integer, Thing> things = new HashMap<>(); //карта элем�
 private int[][] relationships; //массив отношений
 private ArrayList<ArrayList<Thing>> layers = new ArrayList<>(); //список слоев элементов согласно таблице отношений
 private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>(); //список слоев элементов согласно сумме критериев
+private ArrayList<Thing>[][] xSquared;
+private int[][] R;
 
 public Things(int NUMBER_OF_THINGS) //конструктор
 {
@@ -48,11 +51,53 @@ public boolean calculateRelationships() //расчет отношений
 	relationships = new int[things.size()][things.size()];
 	try
 	{
-		for (int thing1Key : things.keySet())
+		for (int i : things.keySet())
 		{
-			for (int thing2Key : things.keySet())
+			for (int j : things.keySet())
 			{
-				relationships[thing1Key][thing2Key] = compare(things.get(thing1Key), things.get(thing2Key)); //заполнение массива
+				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
+				if
+						(
+							(
+								(
+								(R[i][j] == 0)
+								||
+								(R[i][j] == 2)
+								)
+
+								&&
+
+								(
+								comparison==2
+								)
+							)
+
+							||
+
+							(
+								(
+									R[i][j] == 1
+									)
+									||
+									(
+									R[j][i] == 2
+								)
+								&&
+								(
+								comparison==0
+								)
+							)
+						)
+					relationships[i][j] = comparison;
+
+				else if (R[i][j] == 0)
+					relationships[i][j] = 2;
+				else if (R[i][j] == 1)
+					relationships[i][j] = 0;
+				else if (R[i][j] == 3)
+					relationships[i][j] = -1;
+				else
+					relationships[i][j] = 1;
 			}
 
 		}
@@ -125,7 +170,7 @@ public void printRelationships()
 	System.out.println();
 }
 
-public void calculateLayers() //подсчет слоев согласно таблице отношений
+/*public void calculateLayers() //подсчет слоев согласно таблице отношений
 {
 	int maxSum = calculateLayerSum(); //поиск максимальной суммы строки в таблице
 
@@ -153,7 +198,25 @@ public void calculateLayers() //подсчет слоев согласно та�
 			layers.add(layer); //вносим новый слой в список слоев
 		}
 	}
+}*/
+
+public void calculateLayers()
+{
+//TODO
 }
+
+public void calculateR()
+{
+	R = new int[things.size()][things.size()];
+	//0 - '>'
+	//1 - '<'
+	//2 - '='
+	//3 - 'несравнимо'
+
+	LPR lpr = new LPR();
+	R = lpr.decide(things.size());
+}
+
 
 private int calculateLayerSum() //подсчет суммы слоя для таблицы отношений
 {

@@ -13,12 +13,8 @@ public void executeLogic()
 	Things things = new Things(NUMBER_OF_ITEMS); //создание набора элементов
 	things.printCriterionTable(); //вывод таблицы критериев, веса и объема элементов
 
-	if (!things.calculateRelationships())//расчет таблицы отношений
-	{
-		System.err.println("CALCULATION ERROR");
-	}
-	things.printRelationships(); //вывод таблицы отношений
-
+	things.calculateR();
+	things.calculateRelationships();
 	things.calculateLayers();
 	//things.printLayers();
 	Containers containers1 = new Containers(NUMBER_OF_CONTAINERS); //создание набора контейнеров
