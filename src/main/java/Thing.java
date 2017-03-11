@@ -14,7 +14,6 @@ private int volume;
 private int ID; //идентификатор элемента
 private int[] criterionSet = new int[5]; //массив критериев
 private static int IDs = 0; //счетчик идентификаторов элементов
-private int layerSum = 0;
 private List<Link> links = new ArrayList<>();
 
 
@@ -61,15 +60,6 @@ public int criterionSum() //подсчет суммы критериев для 
 	return sum;
 }
 
-public void setLayerSum(int layerSum)
-{
-	this.layerSum = layerSum;
-}
-
-public int getLayerSum()
-{
-	return this.layerSum;
-}
 
 
 /**

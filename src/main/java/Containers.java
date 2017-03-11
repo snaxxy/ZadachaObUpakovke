@@ -19,18 +19,19 @@ public Containers(int NUMBER_OF_CONTAINERS)
 
 public void packContainer(Things things) //упаковка контейнеров согласно таблице отношений
 {
-	for (ArrayList<Thing> layer : things.getLayers())
+	for (int i = things.getLayers().size()-1; i >= 0; --i)
 	{
-
+		ArrayList<Thing> layer = things.getLayers().get(i);
 		for (Thing thing : layer)
 		{
 
 			tryPacking(thing);
 
 		}
-
-	}
 }
+}
+
+
 
 public void packContainerCriterion(Things things) //упаковка контейнеров согласно сумме критериев
 {

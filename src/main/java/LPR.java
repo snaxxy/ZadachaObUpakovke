@@ -1,10 +1,16 @@
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Класс лица, принимающего решения
+ *
  */
 public class LPR
 {
+//0 - '>'
+//1 - '<'
+//2 - '='
+//3 - 'несравнимо'
 	public LPR()
 	{
 
@@ -26,7 +32,7 @@ public class LPR
 
 				Random random = new Random();
 
-				int randomResult = random.nextInt(7);
+				int randomResult = random.nextInt(20);
 
 				if (randomResult == 0)
 				{

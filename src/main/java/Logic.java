@@ -14,10 +14,11 @@ public void executeLogic()
 	things.printCriterionTable(); //вывод таблицы критериев, веса и объема элементов
 
 	things.calculateR();
+	things.printR();
 	things.calculateRelationships();
 	things.printRelationships();
 	things.calculateLayers();
-	//things.printLayers();
+	things.printLayers();
 	Containers containers1 = new Containers(NUMBER_OF_CONTAINERS); //создание набора контейнеров
 	containers1.packContainer(things);
 	containers1.printContainers(); //вывод содержимого контейнеров

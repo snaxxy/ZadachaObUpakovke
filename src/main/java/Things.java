@@ -49,6 +49,10 @@ public void printCriterionTable() //вывод таблицы критериев
 
 public boolean calculateRelationships() //расчет отношений
 {
+	//-1 - несравнимо
+	//0 - меньше
+	//1 - эквивалентно
+	//2 - больше
 	relationships = new int[things.size()][things.size()];
 	try
 	{
@@ -57,38 +61,15 @@ public boolean calculateRelationships() //расчет отношений
 			for (int j : things.keySet())
 			{
 				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-				if
-						(
-							(
-								(
-								(R[i][j] == 0)
-								||
-								(R[i][j] == 2)
-								)
+				if ((((R[i][j] == 0) || (R[i][j] == 2))
 
-								&&
+						&&
 
-								(
-								comparison==2
-								)
-							)
+						(comparison == 2))
 
-							||
+						||
 
-							(
-								(
-									R[i][j] == 1
-									)
-									||
-									(
-									R[j][i] == 2
-								)
-								&&
-								(
-								comparison==0
-								)
-							)
-						)
+						((R[i][j] == 1) || (R[j][i] == 2) && (comparison == 0)))
 					relationships[i][j] = comparison;
 
 				else if (R[i][j] == 0)
@@ -164,13 +145,71 @@ public void printRelationships()
 		System.out.printf("%4s", k);
 		for (int j = 0; j < things.size(); ++j)
 		{
-			System.out.printf("%4s", relationships[k][j]);
+			char out = 'E';
+			switch (relationships[k][j])
+			{
+				case -1:
+					out = '#';
+					break;
+				case 0:
+					out = '<';
+					break;
+				case 1:
+					out = '=';
+					break;
+				case 2:
+					out = '>';
+					break;
+			}
+			System.out.printf("%4s", out);
 		}
 		System.out.println();
 	}
 	System.out.println();
 }
 
+public void printR()
+{
+	System.out.println("ТАБЛИЦА СРАВНЕНИЙ (R)");
+	for (int i = 0; i <= things.size(); ++i)
+	{
+		System.out.printf("----");
+	}
+	System.out.println();
+	System.out.printf("%4s", "");
+	for (int i = 0; i < things.size(); ++i)
+	{
+		System.out.printf("%4s", i);
+	}
+	System.out.println();
+	for (int k = 0; k < things.size(); ++k)
+	{
+		System.out.printf("%4s", k);
+		for (int j = 0; j < things.size(); ++j)
+		{
+			char out = 'E';
+			switch (R[k][j])
+			{
+				case 0:
+					out = '>';
+					break;
+				case 1:
+					out = '<';
+					break;
+				case 2:
+					out = '=';
+					break;
+				case 3:
+					out = '#';
+					break;
+			}
+
+			System.out.printf("%4s", out);
+		}
+		System.out.println();
+	}
+	System.out.println();
+}
 /*public void calculateLayers() //подсчет слоев согласно таблице отношений
 {
 	int maxSum = calculateLayerSum(); //поиск максимальной суммы строки в таблице
@@ -201,54 +240,79 @@ public void printRelationships()
 	}
 }*/
 
-    private boolean isExcluded(ArrayList<Thing> excluded, Thing thing)
-    {
-        for (Thing exclude: excluded
-             ) {
-            if (exclude.equals(thing))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+private boolean isExcluded(ArrayList<Thing> layer, Thing thing)
+{
+	for (Thing exclude : layer)
+	{
+		if (exclude.equals(thing))
+		{
+			return true;
+		}
+	}
+	for (ArrayList<Thing> layer2 : layers)
+	{
+		for (Thing thing1 : layer2)
+		{
+			if (thing1.equals(thing))
+				return true;
+		}
+	}
+	return false;
+}
 
 public void calculateLayers()
 {
-//TODO
-    ArrayList<Thing> excluded = new ArrayList<>();
+	while (true)
+	{
+		ArrayList<Thing> layer = new ArrayList<>();
+		for (int i = 0; i < relationships.length; ++i)
+		{
+			boolean existsWorse = false;
+			boolean existsBetter = false;
 
 
-    while (true)
-    {
-        for (int i = 0; i < relationships.length; ++i) {
-            boolean existsWorse = false;
-            boolean existsBetter = false;
-            for (int j = 0; j < relationships.length; ++j) {
-                if (isExcluded(excluded, things.get(i)))
-                {
-                    continue;
-                }
-                if (relationships[i][j] == 0) {
-                    existsWorse = true;
-                }
-                if ((relationships[i][j]==1)||(relationships[i][j]==2))
-                {
-                    existsBetter=true;
-                }
-            }
+			for (int j = 0; j < relationships.length; ++j)
+			{
+				if (i == j)
+				{
+					continue;
+				}
+				if (isExcluded(layer, things.get(i)))
+				{
+					continue;
+				}
+				if ((relationships[i][j] == 0) && (!isExcluded(layer, things.get(j))))
+				{
+					existsWorse = true;
+				}
+				if (((relationships[i][j] == 1) || (relationships[i][j] == 2)) && (!isExcluded(layer, things.get(j))))
+				{
+					existsBetter = true;
+				}
 
-            if (existsWorse && !existsBetter)
-            {
-                excluded.add(things.get(i));
-            }
-        }
-        if (excluded.size()==0)
-        {
-            break;
-        }
-        layers.add(excluded);
-    }
+
+			}
+
+
+			if (existsWorse && !existsBetter)
+			{
+				layer.add(things.get(i));
+			}
+		}
+		if (layer.size() == 0)
+		{
+			for (int i = 0; i < things.size(); ++i)
+			{
+				if (!isExcluded(layer, things.get(i)))
+				{
+					layer.add(things.get(i));
+				}
+			}
+			layers.add(layer);
+			break;
+		}
+		layers.add(layer);
+	}
 }
 
 public void calculateR()
@@ -263,30 +327,6 @@ public void calculateR()
 	R = lpr.decide(things.size());
 }
 
-
-private int calculateLayerSum() //подсчет суммы слоя для таблицы отношений
-{
-	int maxSum = 0;
-	for (int i = 0; i < things.size(); ++i)
-	{
-
-		int layerSum = 0;
-
-		for (int j = 0; j < things.size(); ++j)
-		{
-			layerSum += relationships[i][j];
-		}
-
-		if (layerSum > maxSum)
-		{
-			maxSum = layerSum;
-		}
-
-		things.get(i).setLayerSum(layerSum);
-
-	}
-	return maxSum;
-}
 
 public void calculateCriterionLayers() //подсчет слоев для суммы критериев
 {
@@ -337,7 +377,7 @@ public void printLayers()
 		System.out.printf("Слой " + i++ + ": ");
 		for (Thing thing : layer)
 		{
-			System.out.printf(thing.getID() + " (" + thing.getLayerSum() + ") ");
+			System.out.printf(thing.getID() + " ");
 		}
 		System.out.println();
 	}
