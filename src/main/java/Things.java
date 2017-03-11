@@ -53,6 +53,12 @@ public boolean calculateRelationships() //расчет отношений
 	//0 - меньше
 	//1 - эквивалентно
 	//2 - больше
+
+	//ЛПР
+	// 0 - '>'
+	//1 - '<'
+	//2 - '='
+	//3 - 'несравнимо'
 	relationships = new int[things.size()][things.size()];
 	try
 	{
@@ -61,7 +67,7 @@ public boolean calculateRelationships() //расчет отношений
 			for (int j : things.keySet())
 			{
 				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-				if ((((R[i][j] == 0) || (R[i][j] == 2))
+/*				if ((((R[i][j] == 0) || (R[i][j] == 2))
 
 						&&
 
@@ -79,7 +85,25 @@ public boolean calculateRelationships() //расчет отношений
 				else if (R[i][j] == 3)
 					relationships[i][j] = -1;
 				else
-					relationships[i][j] = 1;
+					relationships[i][j] = 1;*/
+if (R[i][j]==2)
+{
+relationships[i][j]=comparison;
+continue;
+}
+switch (R[i][j])
+{
+	case 0:
+		relationships[i][j]=2;
+		break;
+	case 1:
+		relationships[i][j]=0;
+		break;
+	case 3:
+		relationships[i][j]=-1;
+		break;
+}
+
 			}
 
 		}
@@ -168,9 +192,48 @@ public void printRelationships()
 	System.out.println();
 }
 
+public void printComparisons()
+{
+	System.out.println("ТАБЛИЦА СРАВНЕНИЙ ПО КРИТЕРИЯМ");
+	for (int i = 0; i <= things.size(); ++i)
+	{
+		System.out.printf("----");
+	}
+	System.out.println();
+	System.out.printf("%4s", "");
+	for (int i = 0; i < things.size(); ++i)
+	{
+		System.out.printf("%4s", i);
+	}
+	System.out.println();
+	for (int k = 0; k < things.size(); ++k)
+	{
+		System.out.printf("%4s", k);
+		for (int j = 0; j < things.size(); ++j)
+		{
+			char out = 'E';
+			switch (compare(things.get(k),things.get(j)))
+			{
+				case 0:
+					out = '<';
+					break;
+				case 1:
+					out = '=';
+					break;
+				case 2:
+					out = '>';
+					break;
+			}
+			System.out.printf("%4s", out);
+		}
+		System.out.println();
+	}
+	System.out.println();
+}
+
 public void printR()
 {
-	System.out.println("ТАБЛИЦА СРАВНЕНИЙ (R)");
+	System.out.println("R (СРАВНЕНИЕ ЛПР)");
 	for (int i = 0; i <= things.size(); ++i)
 	{
 		System.out.printf("----");

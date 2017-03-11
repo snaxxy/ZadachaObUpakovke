@@ -12,7 +12,7 @@ public void executeLogic()
 {
 	Things things = new Things(NUMBER_OF_ITEMS); //создание набора элементов
 	things.printCriterionTable(); //вывод таблицы критериев, веса и объема элементов
-
+	things.printComparisons();
 	things.calculateR();
 	things.printR();
 	things.calculateRelationships();
