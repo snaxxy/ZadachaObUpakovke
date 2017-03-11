@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /*
@@ -200,9 +201,54 @@ public void printRelationships()
 	}
 }*/
 
+    private boolean isExcluded(ArrayList<Thing> excluded, Thing thing)
+    {
+        for (Thing exclude: excluded
+             ) {
+            if (exclude.equals(thing))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 public void calculateLayers()
 {
 //TODO
+    ArrayList<Thing> excluded = new ArrayList<>();
+
+
+    while (true)
+    {
+        for (int i = 0; i < relationships.length; ++i) {
+            boolean existsWorse = false;
+            boolean existsBetter = false;
+            for (int j = 0; j < relationships.length; ++j) {
+                if (isExcluded(excluded, things.get(i)))
+                {
+                    continue;
+                }
+                if (relationships[i][j] == 0) {
+                    existsWorse = true;
+                }
+                if ((relationships[i][j]==1)||(relationships[i][j]==2))
+                {
+                    existsBetter=true;
+                }
+            }
+
+            if (existsWorse && !existsBetter)
+            {
+                excluded.add(things.get(i));
+            }
+        }
+        if (excluded.size()==0)
+        {
+            break;
+        }
+        layers.add(excluded);
+    }
 }
 
 public void calculateR()

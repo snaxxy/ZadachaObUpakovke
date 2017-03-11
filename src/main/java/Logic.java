@@ -15,6 +15,7 @@ public void executeLogic()
 
 	things.calculateR();
 	things.calculateRelationships();
+	things.printRelationships();
 	things.calculateLayers();
 	//things.printLayers();
 	Containers containers1 = new Containers(NUMBER_OF_CONTAINERS); //создание набора контейнеров
