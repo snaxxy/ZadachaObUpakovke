@@ -303,15 +303,9 @@ public void printR()
 	}
 }*/
 
-private boolean isExcluded(ArrayList<Thing> layer, Thing thing)
+private boolean isExcluded(Thing thing)
 {
-	for (Thing exclude : layer)
-	{
-		if (exclude.equals(thing))
-		{
-			return true;
-		}
-	}
+
 	for (ArrayList<Thing> layer2 : layers)
 	{
 		for (Thing thing1 : layer2)
@@ -333,30 +327,25 @@ public void calculateLayers()
 			boolean existsWorse = false;
 			boolean existsBetter = false;
 
-
 			for (int j = 0; j < relationships.length; ++j)
 			{
 				if (i == j)
 				{
 					continue;
 				}
-				if (isExcluded(layer, things.get(i)))
+				if (isExcluded(things.get(i)))
 				{
 					continue;
 				}
-				if ((relationships[i][j] == 0) && (!isExcluded(layer, things.get(j))))
+				if ((relationships[i][j] == 0) && (!isExcluded(things.get(j))))
 				{
 					existsWorse = true;
 				}
-				if (((relationships[i][j] == 1) || (relationships[i][j] == 2)) && (!isExcluded(layer, things.get(j))))
+				if (((relationships[i][j] == 1) || (relationships[i][j] == 2)) && (!isExcluded(things.get(j))))
 				{
 					existsBetter = true;
 				}
-
-
 			}
-
-
 			if (existsWorse && !existsBetter)
 			{
 				layer.add(things.get(i));
@@ -364,17 +353,56 @@ public void calculateLayers()
 		}
 		if (layer.size() == 0)
 		{
-			for (int i = 0; i < things.size(); ++i)
+
+			for (int i = 0; i < relationships.length; ++i)
 			{
-				if (!isExcluded(layer, things.get(i)))
+				boolean existsNotBetter=false;
+
+				for (int j = 0; j < relationships.length; ++j)
+				{
+					if (i == j)
+					{
+						continue;
+					}
+					if (isExcluded(things.get(i)))
+					{
+						continue;
+					}
+					if (relationships[i][j]!=2)
+					{
+						existsNotBetter=true;
+					}
+
+				}
+
+				if ((!existsNotBetter)&&(!isExcluded(things.get(i))))
 				{
 					layer.add(things.get(i));
 				}
+
 			}
-			layers.add(layer);
-			break;
+
+			if (layer.size() == 0)
+			{
+				for (int i = 0; i < things.size(); ++i)
+				{
+					if (!isExcluded(things.get(i)))
+					{
+						layer.add(things.get(i));
+					}
+				}
+				layers.add(layer);
+				break;
+			}
+			else
+			{
+				layers.add(0,layer);//add to beginning
+			}
 		}
-		layers.add(layer);
+		else
+		{
+			layers.add(layer);
+		}
 	}
 }
 

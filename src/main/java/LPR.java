@@ -32,7 +32,7 @@ public class LPR
 
 				Random random = new Random();
 
-				int randomResult = random.nextInt(20);
+				int randomResult = random.nextInt(30);
 
 				if (randomResult == 0)
 				{
