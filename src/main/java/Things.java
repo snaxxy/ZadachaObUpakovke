@@ -12,8 +12,7 @@ private HashMap<Integer, Thing> things = new HashMap<>(); //карта элем�
 private int[][] relationships; //массив отношений
 private ArrayList<ArrayList<Thing>> layers = new ArrayList<>(); //список слоев элементов согласно таблице отношений
 private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>(); //список слоев элементов согласно сумме критериев
-private ArrayList<Thing>[][] xSquared;
-private int[][] R;
+private int[][] R; //массив оценок ЛПР
 
 public Things(int NUMBER_OF_THINGS) //конструктор
 {
@@ -67,42 +66,23 @@ public boolean calculateRelationships() //расчет отношений
 			for (int j : things.keySet())
 			{
 				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-/*				if ((((R[i][j] == 0) || (R[i][j] == 2))
-
-						&&
-
-						(comparison == 2))
-
-						||
-
-						((R[i][j] == 1) || (R[j][i] == 2) && (comparison == 0)))
+				if (R[i][j] == 2)
+				{
 					relationships[i][j] = comparison;
-
-				else if (R[i][j] == 0)
-					relationships[i][j] = 2;
-				else if (R[i][j] == 1)
-					relationships[i][j] = 0;
-				else if (R[i][j] == 3)
-					relationships[i][j] = -1;
-				else
-					relationships[i][j] = 1;*/
-if (R[i][j]==2)
-{
-relationships[i][j]=comparison;
-continue;
-}
-switch (R[i][j])
-{
-	case 0:
-		relationships[i][j]=2;
-		break;
-	case 1:
-		relationships[i][j]=0;
-		break;
-	case 3:
-		relationships[i][j]=-1;
-		break;
-}
+					continue;
+				}
+				switch (R[i][j])
+				{
+					case 0:
+						relationships[i][j] = 2;
+						break;
+					case 1:
+						relationships[i][j] = 0;
+						break;
+					case 3:
+						relationships[i][j] = -1;
+						break;
+				}
 
 			}
 
@@ -212,7 +192,7 @@ public void printComparisons()
 		for (int j = 0; j < things.size(); ++j)
 		{
 			char out = 'E';
-			switch (compare(things.get(k),things.get(j)))
+			switch (compare(things.get(k), things.get(j)))
 			{
 				case 0:
 					out = '<';
@@ -311,7 +291,9 @@ private boolean isExcluded(Thing thing)
 		for (Thing thing1 : layer2)
 		{
 			if (thing1.equals(thing))
+			{
 				return true;
+			}
 		}
 	}
 	return false;
@@ -356,7 +338,7 @@ public void calculateLayers()
 
 			for (int i = 0; i < relationships.length; ++i)
 			{
-				boolean existsNotBetter=false;
+				boolean existsNotBetter = false;
 
 				for (int j = 0; j < relationships.length; ++j)
 				{
@@ -368,14 +350,14 @@ public void calculateLayers()
 					{
 						continue;
 					}
-					if (relationships[i][j]!=2)
+					if (relationships[i][j] != 2)
 					{
-						existsNotBetter=true;
+						existsNotBetter = true;
 					}
 
 				}
 
-				if ((!existsNotBetter)&&(!isExcluded(things.get(i))))
+				if ((!existsNotBetter) && (!isExcluded(things.get(i))))
 				{
 					layer.add(things.get(i));
 				}
@@ -396,7 +378,7 @@ public void calculateLayers()
 			}
 			else
 			{
-				layers.add(0,layer);//add to beginning
+				layers.add(0, layer);//add to beginning
 			}
 		}
 		else
