@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /*
@@ -59,6 +57,10 @@ public int criterionSum() //подсчет суммы критериев для 
 	return sum;
 }
 
+public void resetIDs()
+{
+	IDs=0;
+}
 
 }
 

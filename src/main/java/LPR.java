@@ -1,5 +1,4 @@
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Класс лица, принимающего решения
@@ -31,7 +30,7 @@ public int[][] decide(int size)
 
 			Random random = new Random();
 
-			int randomResult = random.nextInt(30);
+			int randomResult = random.nextInt(10);
 
 			if (randomResult == 0)
 			{
@@ -47,7 +46,7 @@ public int[][] decide(int size)
 				continue;
 			}
 
-			if (randomResult <= 4)
+			if (randomResult <= 6)
 			{
 				R[i][j] = 2;
 				R[j][i] = 2;
