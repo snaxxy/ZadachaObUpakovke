@@ -183,7 +183,8 @@ private boolean isExcluded(Thing thing)
 
 public void calculateLayers()
 {
-
+int divider=0; //разделитель между лучшими и худшими слоями
+	int bigLayers=0;
 	while (true)
 	{
 		ArrayList<Thing> layer = new ArrayList<>();
@@ -256,24 +257,18 @@ public void calculateLayers()
 						layer.add(things.get(i));
 					}
 				}
-				layers.add(layer);
-				if (foundBigger)
-				{
-					layers.remove(bestLayer);
-					layers.add(bestLayer);
-				}
+				layers.add(divider, layer);
 				break;
 			}
 			else
 			{
-				bestLayer=layer;
-				layers.add(0, layer);
+				layers.add(layers.size()-bigLayers++, layer);
 				foundBigger=true;
 			}
 		}
 		else
 		{
-			layers.add(layer);
+			layers.add(divider++, layer);
 		}
 	}
 }
