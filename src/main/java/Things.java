@@ -16,7 +16,6 @@ private HashMap<Integer, Thing> things = new HashMap<>(); //карта элем�
 private int[][] relationships; //массив отношений
 private ArrayList<ArrayList<Thing>> layers = new ArrayList<>(); //список слоев элементов согласно таблице отношений
 private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>(); //список слоев элементов согласно сумме критериев
-private int[][] R; //массив оценок ЛПР
 public boolean foundBigger=false;
 private ArrayList<Thing> bestLayer = new ArrayList<>();
 
@@ -59,33 +58,13 @@ public void calculateRelationships() //расчет отношений
 	//1 - эквивалентно
 	//2 - больше
 
-	//ЛПР
-	// 0 - '>'
-	//1 - '<'
-	//2 - '='
-	//3 - 'несравнимо'
 	relationships = new int[things.size()][things.size()];
 	for (int i : things.keySet())
 		{
 			for (int j : things.keySet())
 			{
 				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-				switch (R[i][j])
-				{
-					case 2:
-						relationships[i][j] = comparison;
-						break;
-					case 0:
-						relationships[i][j] = 2;
-						break;
-					case 1:
-						relationships[i][j] = 0;
-						break;
-					case 3:
-						relationships[i][j] = -1;
-						break;
-				}
-
+				relationships[i][j] = comparison;
 			}
 
 		}
@@ -93,9 +72,7 @@ public void calculateRelationships() //расчет отношений
 
 private int compare(Thing thing1, Thing thing2) //сравнение двух элементов
 {
-	int lesser = 0; //счетчик результатов "меньше"
-	int greater = 0; //счетчик результатов "больше"
-	boolean allNotLess = true; //флаг "нет результатов "меньше""
+	boolean existsLess = false; //флаг "есть результат "меньше""
 	boolean existsGreater = false; //флаг "есть результат "больше""
 	boolean allAreEqual = true; //флаг "все результаты "равно""
 
@@ -103,28 +80,32 @@ private int compare(Thing thing1, Thing thing2) //сравнение двух э
 	{
 		if (thing1.getCriterionSet()[i] < thing2.getCriterionSet()[i])
 		{
-			lesser++;
-			allNotLess = false;
 			allAreEqual = false;
+			existsLess = true;
 		}
 		if (thing1.getCriterionSet()[i] > thing2.getCriterionSet()[i])
 		{
-			greater++;
 			allAreEqual = false;
 			existsGreater = true;
 		}
 	}
-	if (((allNotLess) && (existsGreater)) || (greater > lesser))
+
+
+	if (allAreEqual)
+	{
+		return 1;
+	}
+
+	if (existsGreater&&!existsLess)
 	{
 		return 2;
 	}
-
-	if ((allAreEqual) || (greater == lesser))
+	if (existsLess&&!existsGreater)
 	{
-		return 1; //выводятся удвоенные результаты чтобы избежать плавающей точки
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }
 
 public void printRelationships()
@@ -169,88 +150,6 @@ public void printRelationships()
 	System.out.println();
 }
 
-public void printComparisons()
-{
-	System.out.println("ТАБЛИЦА СРАВНЕНИЙ ПО КРИТЕРИЯМ");
-	for (int i = 0; i <= things.size(); ++i)
-	{
-		System.out.printf("----");
-	}
-	System.out.println();
-	System.out.printf("%4s", "");
-	for (int i = 0; i < things.size(); ++i)
-	{
-		System.out.printf("%4s", i);
-	}
-	System.out.println();
-	for (int k = 0; k < things.size(); ++k)
-	{
-		System.out.printf("%4s", k);
-		for (int j = 0; j < things.size(); ++j)
-		{
-			char out = 'E';
-			switch (compare(things.get(k), things.get(j)))
-			{
-				case 0:
-					out = '<';
-					break;
-				case 1:
-					out = '=';
-					break;
-				case 2:
-					out = '>';
-					break;
-			}
-			System.out.printf("%4s", out);
-		}
-		System.out.println();
-	}
-	System.out.println();
-}
-
-public void printR()
-{
-	System.out.println("R (СРАВНЕНИЕ ЛПР)");
-	for (int i = 0; i <= things.size(); ++i)
-	{
-		System.out.printf("----");
-	}
-	System.out.println();
-	System.out.printf("%4s", "");
-	for (int i = 0; i < things.size(); ++i)
-	{
-		System.out.printf("%4s", i);
-	}
-	System.out.println();
-	for (int k = 0; k < things.size(); ++k)
-	{
-		System.out.printf("%4s", k);
-		for (int j = 0; j < things.size(); ++j)
-		{
-			char out = 'E';
-			switch (R[k][j])
-			{
-				case 0:
-					out = '>';
-					break;
-				case 1:
-					out = '<';
-					break;
-				case 2:
-					out = '=';
-					break;
-				case 3:
-					out = '#';
-					break;
-			}
-
-			System.out.printf("%4s", out);
-		}
-		System.out.println();
-	}
-	System.out.println();
-}
-
 public void printPairs()
 {
 	System.out.printf("R = ");
@@ -258,7 +157,7 @@ public void printPairs()
 	{
 		for (int j = 0; j < things.size(); ++j)
 		{
-			if ((R[k][j]==0)||(R[k][j]==2))
+			if ((relationships[k][j]==0)||(relationships[k][j]==2))
 				System.out.printf("{x" + k + ", x" + j + "}, ");
 		}
 		System.out.println();
@@ -379,17 +278,6 @@ public void calculateLayers()
 	}
 }
 
-public void calculateR()
-{
-	R = new int[things.size()][things.size()];
-	//0 - '>'
-	//1 - '<'
-	//2 - '='
-	//3 - 'несравнимо'
-
-	LPR lpr = new LPR();
-	R = lpr.decide(things.size());
-}
 
 
 public void calculateCriterionLayers() //подсчет слоев для суммы критериев

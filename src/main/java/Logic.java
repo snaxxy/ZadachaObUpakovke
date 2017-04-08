@@ -15,7 +15,7 @@ public void executeLogic()
 
 
 	Things things = new Things(NUMBER_OF_ITEMS); //создание набора элементов
-	things.calculateR();
+	//things.calculateR();
 	things.calculateRelationships();
 	things.calculateLayers();
 	Containers containers1 = new Containers(NUMBER_OF_CONTAINERS); //создание набора контейнеров
@@ -25,8 +25,8 @@ public void executeLogic()
 	containers2.packContainerCriterion(things);
 
 		things.printCriterionTable(); //вывод таблицы критериев, веса и объема элементов
-		things.printComparisons();
-		things.printR();
+		//things.printComparisons();
+		//things.printR();
 		things.printPairs();
 		things.printRelationships();
 		things.printLayers();
