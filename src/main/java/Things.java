@@ -152,17 +152,21 @@ public void printRelationships()
 
 public void printPairs()
 {
-	System.out.printf("R = ");
+	StringBuilder output = new StringBuilder();
+	output.append("R = {");
 	for (int k = 0; k < things.size(); ++k)
 	{
 		for (int j = 0; j < things.size(); ++j)
 		{
 			if ((relationships[k][j]==0)||(relationships[k][j]==2))
-				System.out.printf("{x" + k + ", x" + j + "}, ");
+				output.append("(x" + k + ", x" + j + "), ");
 		}
-		System.out.println();
+		output.append("\n");
 	}
-	System.out.println();
+	output.deleteCharAt(output.length()-1);
+	output.deleteCharAt(output.length()-2);
+	output.append("}\n");
+	System.out.printf(output.toString());
 }
 
 private boolean isExcluded(Thing thing)
