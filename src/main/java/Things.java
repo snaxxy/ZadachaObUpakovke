@@ -63,8 +63,7 @@ public void calculateRelationships() //расчет отношений
 		{
 			for (int j : things.keySet())
 			{
-				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-				relationships[i][j] = comparison;
+				relationships[i][j] = compare(things.get(i), things.get(j)); //заполнение массива
 			}
 
 		}
