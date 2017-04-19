@@ -22,7 +22,10 @@ public void putThing(Thing thing)
 	things.add(thing);
 } //упаковка элемента в контейнер
 
-public int freeVolume() { return volumeCapacity - getTotalVolume(); } //доступный объем
+public int freeVolume()
+{
+	return volumeCapacity - getTotalVolume();
+} //доступный объем
 
 public int freeWeight()
 {

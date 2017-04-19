@@ -8,6 +8,7 @@ public class Containers
 {
 
 private List<Container> containers = new ArrayList<>(); //список контейнеров
+private int criterionSum;
 
 public Containers(int NUMBER_OF_CONTAINERS)
 {
@@ -19,7 +20,7 @@ public Containers(int NUMBER_OF_CONTAINERS)
 
 public void packContainer(Things things) //упаковка контейнеров согласно таблице отношений
 {
-	for (int i = things.getLayers().size()-1; i >= 0; --i)
+	for (int i = things.getLayers().size() - 1; i >= 0; --i)
 	{
 		ArrayList<Thing> layer = things.getLayers().get(i);
 		for (Thing thing : layer)
@@ -28,9 +29,8 @@ public void packContainer(Things things) //упаковка контейнеро
 			tryPacking(thing);
 
 		}
+	}
 }
-}
-
 
 
 public void packContainerCriterion(Things things) //упаковка контейнеров согласно сумме критериев
@@ -56,6 +56,7 @@ public void tryPacking(Thing thing) //поиск контейнера для у�
 		if ((thing.getWeight() <= container.freeWeight()) && (thing.getVolume() <= container.freeVolume()))
 		{
 			container.putThing(thing);
+			criterionSum+=thing.criterionSum();
 			return;
 		}
 
@@ -74,5 +75,9 @@ public void printContainers() //вывод содержимого
 		System.out.println();
 	}
 	System.out.println();
+}
+public int getCriterionSum()
+{
+	return criterionSum;
 }
 }

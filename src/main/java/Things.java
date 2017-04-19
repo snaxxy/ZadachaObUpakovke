@@ -1,19 +1,23 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 /*
  Класс обертки набора элементов
  */
 public class Things
 {
+public HashMap<Integer, Thing> getThings()
+{
+	return things;
+}
+
 private HashMap<Integer, Thing> things = new HashMap<>(); //карта элементов
 private int[][] relationships; //массив отношений
 private ArrayList<ArrayList<Thing>> layers = new ArrayList<>(); //список слоев элементов согласно таблице отношений
 private ArrayList<ArrayList<Thing>> criterionLayers = new ArrayList<>(); //список слоев элементов согласно сумме критериев
-private ArrayList<Thing>[][] xSquared;
-private int[][] R;
+public boolean foundBigger=false;
+private ArrayList<Thing> bestLayer = new ArrayList<>();
 
 public Things(int NUMBER_OF_THINGS) //конструктор
 {
@@ -47,54 +51,27 @@ public void printCriterionTable() //вывод таблицы критериев
 	System.out.println();
 }
 
-public boolean calculateRelationships() //расчет отношений
+public void calculateRelationships() //расчет отношений
 {
 	//-1 - несравнимо
 	//0 - меньше
 	//1 - эквивалентно
 	//2 - больше
+
 	relationships = new int[things.size()][things.size()];
-	try
-	{
-		for (int i : things.keySet())
+	for (int i : things.keySet())
 		{
 			for (int j : things.keySet())
 			{
-				int comparison = compare(things.get(i), things.get(j)); //заполнение массива
-				if ((((R[i][j] == 0) || (R[i][j] == 2))
-
-						&&
-
-						(comparison == 2))
-
-						||
-
-						((R[i][j] == 1) || (R[j][i] == 2) && (comparison == 0)))
-					relationships[i][j] = comparison;
-
-				else if (R[i][j] == 0)
-					relationships[i][j] = 2;
-				else if (R[i][j] == 1)
-					relationships[i][j] = 0;
-				else if (R[i][j] == 3)
-					relationships[i][j] = -1;
-				else
-					relationships[i][j] = 1;
+				relationships[i][j] = compare(things.get(i), things.get(j)); //заполнение массива
 			}
 
 		}
-	} catch (Exception e)
-	{
-		return false;
-	}
-	return true;
 }
 
 private int compare(Thing thing1, Thing thing2) //сравнение двух элементов
 {
-	int lesser = 0; //счетчик результатов "меньше"
-	int greater = 0; //счетчик результатов "больше"
-	boolean allNotLess = true; //флаг "нет результатов "меньше""
+	boolean existsLess = false; //флаг "есть результат "меньше""
 	boolean existsGreater = false; //флаг "есть результат "больше""
 	boolean allAreEqual = true; //флаг "все результаты "равно""
 
@@ -102,28 +79,32 @@ private int compare(Thing thing1, Thing thing2) //сравнение двух э
 	{
 		if (thing1.getCriterionSet()[i] < thing2.getCriterionSet()[i])
 		{
-			lesser++;
-			allNotLess = false;
 			allAreEqual = false;
+			existsLess = true;
 		}
 		if (thing1.getCriterionSet()[i] > thing2.getCriterionSet()[i])
 		{
-			greater++;
 			allAreEqual = false;
 			existsGreater = true;
 		}
 	}
-	if (((allNotLess) && (existsGreater)) || (greater > lesser))
+
+
+	if (allAreEqual)
+	{
+		return 1;
+	}
+
+	if (existsGreater&&!existsLess)
 	{
 		return 2;
 	}
-
-	if ((allAreEqual) || (greater == lesser))
+	if (existsLess&&!existsGreater)
 	{
-		return 1; //выводятся удвоенные результаты чтобы избежать плавающей точки
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }
 
 public void printRelationships()
@@ -168,93 +149,36 @@ public void printRelationships()
 	System.out.println();
 }
 
-public void printR()
+public void printPairs()
 {
-	System.out.println("ТАБЛИЦА СРАВНЕНИЙ (R)");
-	for (int i = 0; i <= things.size(); ++i)
-	{
-		System.out.printf("----");
-	}
-	System.out.println();
-	System.out.printf("%4s", "");
-	for (int i = 0; i < things.size(); ++i)
-	{
-		System.out.printf("%4s", i);
-	}
-	System.out.println();
+	StringBuilder output = new StringBuilder();
+	output.append("R = {");
 	for (int k = 0; k < things.size(); ++k)
 	{
-		System.out.printf("%4s", k);
 		for (int j = 0; j < things.size(); ++j)
 		{
-			char out = 'E';
-			switch (R[k][j])
-			{
-				case 0:
-					out = '>';
-					break;
-				case 1:
-					out = '<';
-					break;
-				case 2:
-					out = '=';
-					break;
-				case 3:
-					out = '#';
-					break;
-			}
-
-			System.out.printf("%4s", out);
+			if ((relationships[k][j]==0)||(relationships[k][j]==2))
+				output.append("(x" + k + ", x" + j + "), ");
 		}
-		System.out.println();
+		output.append("\n");
 	}
-	System.out.println();
+	output.deleteCharAt(output.length()-1);
+	output.deleteCharAt(output.length()-2);
+	output.append("}\n");
+	System.out.printf(output.toString());
 }
-/*public void calculateLayers() //подсчет слоев согласно таблице отношений
+
+private boolean isExcluded(Thing thing)
 {
-	int maxSum = calculateLayerSum(); //поиск максимальной суммы строки в таблице
 
-	for (int sum = maxSum; sum >= 0; --sum) //проход по убыванию значений суммы с максимального
-	{
-		boolean existsSum = false; //флаг существования как минимум одного элемента с текущей суммой
-		for (int ID : things.keySet())
-		{
-			if (things.get(ID).getLayerSum() == sum)
-			{
-				existsSum = true;
-			}
-		}
-
-		if (existsSum) //в случае существования проходим карту еще раз, занося соответствующие значения в новый слой
-		{
-			ArrayList<Thing> layer = new ArrayList<>(); //новый слой
-			for (int ID : things.keySet())
-			{
-				if (things.get(ID).getLayerSum() == sum)
-				{
-					layer.add(things.get(ID));
-				}
-			}
-			layers.add(layer); //вносим новый слой в список слоев
-		}
-	}
-}*/
-
-private boolean isExcluded(ArrayList<Thing> layer, Thing thing)
-{
-	for (Thing exclude : layer)
-	{
-		if (exclude.equals(thing))
-		{
-			return true;
-		}
-	}
 	for (ArrayList<Thing> layer2 : layers)
 	{
 		for (Thing thing1 : layer2)
 		{
 			if (thing1.equals(thing))
+			{
 				return true;
+			}
 		}
 	}
 	return false;
@@ -262,6 +186,8 @@ private boolean isExcluded(ArrayList<Thing> layer, Thing thing)
 
 public void calculateLayers()
 {
+int divider=0; //разделитель между лучшими и худшими слоями
+	int bigLayers=0;
 	while (true)
 	{
 		ArrayList<Thing> layer = new ArrayList<>();
@@ -270,30 +196,25 @@ public void calculateLayers()
 			boolean existsWorse = false;
 			boolean existsBetter = false;
 
-
 			for (int j = 0; j < relationships.length; ++j)
 			{
 				if (i == j)
 				{
 					continue;
 				}
-				if (isExcluded(layer, things.get(i)))
+				if (isExcluded(things.get(i)))
 				{
 					continue;
 				}
-				if ((relationships[i][j] == 0) && (!isExcluded(layer, things.get(j))))
+				if ((relationships[i][j] == 0) && (!isExcluded(things.get(j))))
 				{
 					existsWorse = true;
 				}
-				if (((relationships[i][j] == 1) || (relationships[i][j] == 2)) && (!isExcluded(layer, things.get(j))))
+				if (((relationships[i][j] == 1) || (relationships[i][j] == 2)) && (!isExcluded(things.get(j))))
 				{
 					existsBetter = true;
 				}
-
-
 			}
-
-
 			if (existsWorse && !existsBetter)
 			{
 				layer.add(things.get(i));
@@ -301,31 +222,60 @@ public void calculateLayers()
 		}
 		if (layer.size() == 0)
 		{
-			for (int i = 0; i < things.size(); ++i)
+
+			for (int i = 0; i < relationships.length; ++i)
 			{
-				if (!isExcluded(layer, things.get(i)))
+				boolean existsNotBetter = false;
+
+				for (int j = 0; j < relationships.length; ++j)
+				{
+					if (i == j)
+					{
+						continue;
+					}
+					if (isExcluded(things.get(i)))
+					{
+						continue;
+					}
+					if (relationships[i][j] != 2)
+					{
+						existsNotBetter = true;
+					}
+
+				}
+
+				if ((!existsNotBetter) && (!isExcluded(things.get(i))))
 				{
 					layer.add(things.get(i));
 				}
+
 			}
-			layers.add(layer);
-			break;
+
+			if (layer.size() == 0)
+			{
+				for (int i = 0; i < things.size(); ++i)
+				{
+					if (!isExcluded(things.get(i)))
+					{
+						layer.add(things.get(i));
+					}
+				}
+				layers.add(divider, layer);
+				break;
+			}
+			else
+			{
+				layers.add(layers.size()-bigLayers++, layer);
+				foundBigger=true;
+			}
 		}
-		layers.add(layer);
+		else
+		{
+			layers.add(divider++, layer);
+		}
 	}
 }
 
-public void calculateR()
-{
-	R = new int[things.size()][things.size()];
-	//0 - '>'
-	//1 - '<'
-	//2 - '='
-	//3 - 'несравнимо'
-
-	LPR lpr = new LPR();
-	R = lpr.decide(things.size());
-}
 
 
 public void calculateCriterionLayers() //подсчет слоев для суммы критериев
@@ -388,6 +338,12 @@ public ArrayList<ArrayList<Thing>> getLayers()
 {
 	return this.layers;
 }
+public void setLayers(ArrayList<ArrayList<Thing>> layers)
+{
+	this.layers=layers;
+}
+
+
 
 public ArrayList<ArrayList<Thing>> getCriterionLayers()
 {
